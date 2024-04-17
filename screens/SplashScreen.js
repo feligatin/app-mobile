@@ -3,7 +3,6 @@ import { View, Image, StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 const SplashScreen = ({ navigation }) => {
   const handleNext = () => {
-    console.log("entra");
     navigation.replace('Login');
   };
 

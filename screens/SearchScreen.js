@@ -34,9 +34,6 @@ const SearchScreen = () => {
 
     fetchProducts();
   }, [items]);
-  console.log("items", items);
-  console.log("input", input);
-  console.log("setInput", setInput);
 
   return (
     <SafeAreaView style={{ marginTop: 60 }}>

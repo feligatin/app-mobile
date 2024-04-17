@@ -13,7 +13,6 @@ import { auth } from "../firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 
 const LoginScreen = () => {
-  console.log("LoginScreen");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigation = useNavigation();
@@ -41,9 +40,7 @@ const LoginScreen = () => {
 
  const login = () => {
      signInWithEmailAndPassword(auth,email,password).then((userCredential) => {
-        console.log("user credential", userCredential);
         const user = userCredential.user;
-        console.log("user details", user);
      })
  }
 

@@ -16,10 +16,10 @@ import MapScreen from "./screens/MapScreen";
 import PropertyInfoScreen from "./screens/PropertyInfoScreen";
 import RoomsScreen from "./screens/RoomsScreen";
 import UserScreen from "./screens/UserScreen";
+import ConfirmationScreen from "./screens/ConfirmationScreen";
 import LoginScreen from "./screens/LoginScreen";
 
 const StackNavigator = () => {
-  console.log("entra aca?");
   const Tab = createBottomTabNavigator();
   const Stack = createNativeStackNavigator();
 
@@ -30,7 +30,7 @@ const StackNavigator = () => {
           name="Home"
           component={HomeScreen}
           options={{
-            tabBarLabel: "Home",
+            tabBarLabel: "Inicio",
             headerShown: false,
             tabBarIcon: ({ focused }) =>
               focused ? (
@@ -60,7 +60,7 @@ const StackNavigator = () => {
           name="Bookings"
           component={BookingScreen}
           options={{
-            tabBarLabel: "Bookings",
+            tabBarLabel: "Reservas",
             headerShown: false,
             tabBarIcon: ({ focused }) =>
               focused ? (
@@ -75,7 +75,7 @@ const StackNavigator = () => {
           name="Profile"
           component={ProfileScreen}
           options={{
-            tabBarLabel: "Profile",
+            tabBarLabel: "Perfil",
             headerShown: false,
             tabBarIcon: ({ focused }) =>
               focused ? (
@@ -99,6 +99,7 @@ const StackNavigator = () => {
         <Stack.Screen name="Info" component={PropertyInfoScreen} />
         <Stack.Screen name="Rooms" component={RoomsScreen} />
         <Stack.Screen name="User" component={UserScreen} />
+        <Stack.Screen name="Confirmation" component={ConfirmationScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

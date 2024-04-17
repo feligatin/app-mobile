@@ -19,11 +19,9 @@ import { useDispatch } from "react-redux";
 import { savedPlaces } from "../SavedReducer";
 import { setDoc, doc } from "firebase/firestore";
 import { auth, db } from "../firebase";
-import BkashImg from "../assets/bkash.png";
 
 const ConfirmationScreen = () => {
   const route = useRoute();
-  console.log(route.params);
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
   const [mobileNumber, setMobileNumber] = useState("");
@@ -58,29 +56,23 @@ const ConfirmationScreen = () => {
   };
 
   const confirmBooking = () => {
-    console.log(mobileNumber);
     let temp = Math.floor(100000 + Math.random() * 900000);
     setOtp(temp);
-    console.log("Generated Otp: "+temp);
     ToastAndroid.show(`Your OTP is: ${temp}`, ToastAndroid.SHORT);  
     setModalVisible(false);
     setOtpModalVisible(true);
   };
 
   const handleOtpSubmission = () => {
-    console.log(otp, userOtp);
     if (userOtp == otp) {
-      console.log("OTP matched. Please enter your PIN.");
       setOtpModalVisible(false);
       setPinModalVisible(true);
     } else {
-      console.log("OTP did not match. Please try again.");
       ToastAndroid.show("OTP did not match. Please try again.", ToastAndroid.SHORT);
     }
   };
 
   const handlePinSubmission = async() => {
-    //console.log(userPin);
     setPinModalVisible(false);
     dispatch(savedPlaces(route.params));
     //each booking id will be unique
@@ -121,40 +113,11 @@ const ConfirmationScreen = () => {
             >
               <MaterialIcons name="stars" size={24} color="green" />
               <Text>{route.params.rating}</Text>
-              <View
-                style={{
-                  backgroundColor: "#003580",
-                  paddingVertical: 3,
-                  borderRadius: 5,
-                  width: 100,
-                }}
-              >
-                <Text
-                  style={{
-                    textAlign: "center",
-                    color: "white",
-                    fontSize: 15,
-                  }}
-                >
-                  Genius Level
-                </Text>
-              </View>
+
             </View>
           </View>
 
-          <View
-            style={{
-              backgroundColor: "#17B169",
-              paddingHorizontal: 6,
-              paddingVertical: 4,
-              borderRadius: 6,
-              marginRight: 14,
-            }}
-          >
-            <Text style={{ color: "white", fontSize: 13 }}>
-              Travel sustainable
-            </Text>
-          </View>
+
         </View>
 
         <View
@@ -189,16 +152,16 @@ const ConfirmationScreen = () => {
         </View>
         <View style={{ margin: 12 }}>
           <Text style={{ fontSize: 16, fontWeight: "600", marginBottom: 3 }}>
-            Rooms and Guests
+            Habitaciones y Huespedes
           </Text>
           <Text style={{ fontSize: 16, fontWeight: "bold", color: "#007FFF" }}>
-            1 Rooms {route.params.adults} Adults {route.params.children}{" "}
-            Children
+            1 Habitación {route.params.adults} Adultos {route.params.children}{" "}
+            Niños
           </Text>
         </View>
 
-        <Pressable onPress={paymentConfirm} style={styles.payButton}>
-          <Text style={styles.payButtonText}>Confirm Payment</Text>
+        <Pressable  style={styles.payButton}>
+          <Text style={styles.payButtonText}>Confirmar Pago</Text>
         </Pressable>
 
         <Modal
@@ -216,10 +179,6 @@ const ConfirmationScreen = () => {
               <TouchableWithoutFeedback>
                 <View style={styles.modalView}>
                   <View style={styles.modalImgView}>
-                    <Image
-                      source={BkashImg}
-                      style={{ width: "100%", height: "100%", padding: 10 }}
-                    />
                   </View>
 
                   <View style={styles.marcentInfo}>
@@ -289,10 +248,6 @@ const ConfirmationScreen = () => {
               <TouchableWithoutFeedback>
                 <View style={styles.modalView}>
                   <View style={styles.modalImgView}>
-                    <Image
-                      source={BkashImg}
-                      style={{ width: "100%", height: "100%", padding: 10 }}
-                    />
                   </View>
 
                   <View style={styles.marcentInfo}>
@@ -357,10 +312,7 @@ const ConfirmationScreen = () => {
               <TouchableWithoutFeedback>
                 <View style={styles.modalView}>
                   <View style={styles.modalImgView}>
-                    <Image
-                      source={BkashImg}
-                      style={{ width: "100%", height: "100%", padding: 10 }}
-                    />
+
                   </View>
 
                   <View style={styles.marcentInfo}>

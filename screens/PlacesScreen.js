@@ -69,13 +69,10 @@ const PlacesScreen = () => {
     fetchProducts();
   }, [items]);
 
-  console.log(items);
-
   const searchPlaces = items?.filter(
     (item) => item.place === route.params.place
   );
   const [sortedData, setSortedData] = useState(searchPlaces);
-  console.log(searchPlaces);
 
   const compare = (a, b) => {
     if (a.newPrice > b.newPrice) {

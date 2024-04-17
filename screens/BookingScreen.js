@@ -46,8 +46,7 @@ const BookingScreen = () => {
 
     fetchProducts();
   }, [items]);
-
-  console.log("consol", items);
+  
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -59,7 +58,6 @@ const BookingScreen = () => {
   return (
     <SafeAreaView>
       {items.map((item, index) => {
-        console.log(item.bookingDetails.name);
         return (
         <Pressable
           key={index}

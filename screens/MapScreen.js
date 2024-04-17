@@ -7,7 +7,6 @@ import MapView, { Marker } from "react-native-maps";
 const MapScreen = () => {
   const route = useRoute();
   const mapView = useRef(null);
-  console.log(route.params);
   const coordinates = [];
   const details = route.params.searchResults.map((item) => item.properties?.map((prop) => {
       coordinates.push({

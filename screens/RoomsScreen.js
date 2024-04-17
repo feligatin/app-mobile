@@ -5,12 +5,11 @@ import { AntDesign, Entypo } from "@expo/vector-icons";
 import Amenities from "../components/Amenities";
 const RoomsScreen = () => {
   const route = useRoute();
-  console.log(route.params);
   const navigation = useNavigation();
   useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: true,
-      title: "Available Rooms",
+      title: "Habitaciones disponibles",
       headerTitleStyle: {
         fontSize: 20,
         fontWeight: "bold",

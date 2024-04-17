@@ -24,7 +24,6 @@ import { SlideAnimation } from "react-native-modals";
 import { ModalContent } from "react-native-modals";
 
 const HomeScreen = () => {
-  console.log("entra acasito?");
   const navigation = useNavigation();
   const [selectedDates, setSelectedDates] = useState();
   const route = useRoute();
@@ -72,7 +71,7 @@ const HomeScreen = () => {
       />
     );
   };
-  console.log(route.params);
+
 
   const searchPlaces = (place) => {
     if(!route.params || !selectedDates){
@@ -90,7 +89,6 @@ const HomeScreen = () => {
         { cancelable: false }
       );
     }
-    console.log(place);
     if(route.params && selectedDates){
       navigation.navigate("Places",{
         rooms:rooms,
@@ -212,7 +210,7 @@ const HomeScreen = () => {
               <Ionicons name="person-outline" size={24} color="black" />
               <TextInput
                 placeholderTextColor="red"
-                placeholder={` ${rooms} room • ${adults} adults • ${children} Children`}
+                placeholder={` ${rooms} Habitación • ${adults} Adultos • ${children} Children`}
               />
             </Pressable>
 
@@ -262,7 +260,7 @@ const HomeScreen = () => {
             />
           </ModalFooter>
         }
-        modalTitle={<ModalTitle title="Select rooms and guests" />}
+        modalTitle={<ModalTitle title="Seleccionar habitaciones y huespedes" />}
         modalAnimation={
           new SlideAnimation({
             slideFrom: "bottom",
@@ -281,7 +279,7 @@ const HomeScreen = () => {
               marginVertical: 15,
             }}
           >
-            <Text style={{ fontSize: 16, fontWeight: "500" }}>Rooms</Text>
+            <Text style={{ fontSize: 16, fontWeight: "500" }}>Habitaciones</Text>
             <Pressable
               style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
             >
@@ -352,7 +350,7 @@ const HomeScreen = () => {
               marginVertical: 15,
             }}
           >
-            <Text style={{ fontSize: 16, fontWeight: "500" }}>Adults</Text>
+            <Text style={{ fontSize: 16, fontWeight: "500" }}>Adultos</Text>
             <Pressable
               style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
             >
@@ -423,7 +421,7 @@ const HomeScreen = () => {
               marginVertical: 15,
             }}
           >
-            <Text style={{ fontSize: 16, fontWeight: "500" }}>Children</Text>
+            <Text style={{ fontSize: 16, fontWeight: "500" }}>Niños</Text>
             <Pressable
               style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
             >

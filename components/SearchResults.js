@@ -3,7 +3,6 @@ import React from 'react'
 import { useNavigation } from '@react-navigation/native'
 
 const SearchResults = ({data,input,setInput}) => {
-    console.log("data",data);
     const navigation = useNavigation();
   return (
     <View style={{padding:10}}>

@@ -21,7 +21,6 @@ const PropertyCard = ({
 }) => {
   const { width, height } = Dimensions.get("window");
   const navigation = useNavigation();
-  console.log("property",property)
   return (
     <View>
       <Pressable
