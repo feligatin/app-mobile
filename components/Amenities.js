@@ -3,35 +3,15 @@ import React from "react";
 
 const Amenities = () => {
   const services = [
-    {
-      id: "0",
-      name: "Desayuno incluido",
-    },
-    {
-      id: "2",
-      name: "WIFI",
-    },
-    {
-      id: "3",
-      name: "Aire acondicionado",
-    },
-    {
-      id: "4",
-      name: "Estacionamiento gratuito",
-    },
-    {
-      id: "5",
-      name: "Piscina",
-    },
-    {
-      id: "6",
-      name: "Restaurante",
-    },
-    {
-      id: "7",
-      name: "Bar",
-    },
+    { id: "0", name: "Desayuno incluido" },
+    { id: "2", name: "WIFI" },
+    { id: "3", name: "Aire acondicionado" },
+    { id: "4", name: "Estacionamiento gratuito" },
+    { id: "5", name: "Piscina" },
+    { id: "6", name: "Restaurante" },
+    { id: "7", name: "Bar" },
   ];
+
   return (
     <View style={{ padding: 10 }}>
       <Text style={{ fontSize: 17, fontWeight: "600" }}>
@@ -40,7 +20,7 @@ const Amenities = () => {
       <View
         style={{ flexDirection: "row", alignItems: "center", flexWrap: "wrap" }}
       >
-        {services.map((item, index) => (
+        {services.map((item) => (
           <View
             style={{
               margin: 10,
@@ -49,9 +29,11 @@ const Amenities = () => {
               paddingVertical: 5,
               borderRadius: 25,
             }}
-            key={index}
+            key={item.id}
           >
-            <Text style={{textAlign:"center",color:"white"}}>{item.name}</Text>
+            <Text style={{ textAlign: "center", color: "white" }}>
+              {item.name}
+            </Text>
           </View>
         ))}
       </View>
