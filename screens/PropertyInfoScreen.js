@@ -6,17 +6,23 @@ import {
   ScrollView,
   Pressable,
   Image,
+  ActivityIndicator,
 } from "react-native";
-import React, { useLayoutEffect } from "react";
+import React, { useLayoutEffect, useState, useEffect } from "react";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import { pixelNormalize } from "../components/Normalise";
 import { MaterialIcons } from "@expo/vector-icons";
 import Amenities from "../components/Amenities";
+import roomService from "../services/roomService"; 
 
 const PropertyInfoScreen = () => {
   const route = useRoute();
+  console.log("por aca", route.params);
   const navigation = useNavigation();
+  const [rooms, setRooms] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
+  // Función para cargar la imagen
   const loadImage = (uri, width = 100, height = 80, borderRadius = 4) => {
     return (
       <View style={{ margin: 6 }}>
@@ -32,6 +38,23 @@ const PropertyInfoScreen = () => {
     );
   };
 
+  // Obtener habitaciones al montar el componente
+  useEffect(() => {
+    const fetchRooms = async () => {
+      try {
+        const response = await roomService.getRoomsByHotelId(route.params.hotel_id);
+        console.log("Roomspor aca:", response.result);
+        setRooms(response.result); // Guardar las habitaciones en el estado
+      } catch (error) {
+        setError("Error al cargar habitaciones");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchRooms();
+  }, [route.params.hotel_id]);
+
+  // Configuración del encabezado
   useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: true,
@@ -48,9 +71,22 @@ const PropertyInfoScreen = () => {
         shadowColor: "transparent",
       },
     });
-  }, []);
+  }, [navigation]);
+
+  // Calcular descuento
   const difference = route.params.oldPrice - route.params.newPrice;
   const offerPrice = (Math.abs(difference) / route.params.oldPrice) * 100;
+
+  // Manejar el estado de carga
+  if (loading) {
+    return <ActivityIndicator size="large" color="#003580" />;
+  }
+
+  // Manejar el estado de error
+  if (error) {
+    return <Text>{error}</Text>;
+  }
+
   return (
     <>
       <SafeAreaView>
@@ -58,11 +94,15 @@ const PropertyInfoScreen = () => {
           <Pressable
             style={{ flexDirection: "row", flexWrap: "wrap", margin: 10 }}
           >
-           {route.params.photos.slice(0, 5).map((photo) => {
-              //console.log(photo.image);
-              return loadImage(photo.image);
-            })}
-           
+            {/* Verifica si photos existe y es un array antes de usar slice */}
+            {Array.isArray(route.params.photos) ? (
+              route.params.photos.slice(0, 5).map((photo, index) => {
+                // Asegúrate de que photo.image también esté definido
+                return loadImage(photo, 100, 80, 4);
+              })
+            ) : (
+              <Text>No hay fotos disponibles</Text>
+            )}
           </Pressable>
 
           <View
@@ -95,13 +135,9 @@ const PropertyInfoScreen = () => {
                     borderRadius: 5,
                     width: 100,
                   }}
-                >
-          
-                </View>
+                ></View>
               </View>
             </View>
-
-          
           </View>
 
           <Text
@@ -131,17 +167,8 @@ const PropertyInfoScreen = () => {
               gap: 8,
             }}
           >
-            <Text
-              style={{
-                color: "red",
-                fontSize: 20,
-                textDecorationLine: "line-through",
-              }}
-            >
-              {route.params.oldPrice * route.params.adults}
-            </Text>
             <Text style={{ fontSize: 20 }}>
-              $ {route.params.newPrice * route.params.adults}
+              $ {route.params.price * route.params.adults}
             </Text>
           </View>
           <View
@@ -177,40 +204,36 @@ const PropertyInfoScreen = () => {
             }}
           >
             <View>
-              <Text
-                style={{ fontSize: 16, fontWeight: "600", marginBottom: 3 }}
-              >
+              <Text style={{ fontSize: 16, fontWeight: "600", marginBottom: 3 }}>
                 Check In
               </Text>
               <Text
                 style={{ fontSize: 16, fontWeight: "bold", color: "#007FFF" }}
               >
-                {route.params.selectedDates.startDate}
+                {route.params.selectedDates.startDate.startDate}
               </Text>
             </View>
 
             <View>
-              <Text
-                style={{ fontSize: 16, fontWeight: "600", marginBottom: 3 }}
-              >
+              <Text style={{ fontSize: 16, fontWeight: "600", marginBottom: 3 }}>
                 Check Out
               </Text>
               <Text
                 style={{ fontSize: 16, fontWeight: "bold", color: "#007FFF" }}
               >
-                {route.params.selectedDates.endDate}
+                {route.params.selectedDates.startDate.endDate}
               </Text>
             </View>
           </View>
+
           <View style={{ margin: 12 }}>
             <Text style={{ fontSize: 16, fontWeight: "600", marginBottom: 3 }}>
-             Habitación y Huespedes
+              Habitación y Huespedes
             </Text>
             <Text
               style={{ fontSize: 16, fontWeight: "bold", color: "#007FFF" }}
             >
-              {route.params.rooms} rooms {route.params.adults} adults{" "}
-              {route.params.children} children
+            {Array.isArray(rooms) ? rooms.length : 0} rooms disponibles
             </Text>
           </View>
 
@@ -238,15 +261,15 @@ const PropertyInfoScreen = () => {
       <Pressable
         onPress={() =>
           navigation.navigate("Rooms", {
-            rooms: route.params.availableRooms,
+            rooms: rooms, // Pasa las habitaciones obtenidas al siguiente screen
             oldPrice: route.params.oldPrice,
             newPrice: route.params.newPrice,
             name: route.params.name,
             children: route.params.children,
             adults: route.params.adults,
             rating: route.params.rating,
-            startDate: route.params.selectedDates.startDate,
-            endDate: route.params.selectedDates.endDate,
+            startDate: route.params.selectedDates.startDate.startDate,
+            endDate: route.params.selectedDates.startDate.endDate,
           })
         }
         style={{

@@ -8,8 +8,7 @@ import {
   ActivityIndicator,
   Alert,
 } from "react-native";
-import { collection, getDocs, query, where } from "firebase/firestore";
-import { db, auth } from "../firebase"; // Import your Firebase configuration
+
 import { useNavigation } from "@react-navigation/native";
 
 const ProfileScreen = () => {

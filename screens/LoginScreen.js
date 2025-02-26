@@ -9,53 +9,33 @@ import {
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
-import { auth } from "../firebase";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import AuthenticationService from '../services/authenticationService';
+
 
 const LoginScreen = () => {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigation = useNavigation();
 
-//   console.log(userCredentials.user.stsTokenManager.accessToken);
-//   AsyncStorage.setItem(
-//     "tokenUser",
-//     userCredentials.user.stsTokenManager.accessToken
-//   );
-
-//   useEffect(() => {
-//     const getMyObject = async () => {
-//       try {
-//         const jsonValue = await AsyncStorage.getItem("tokenUser");
-//         console.log("jsonValue");
-//         if (jsonValue) {
-//           navigation.replace("Main");
-//         }
-//       } catch (e) {
-//         console.log(e);
-//       }
-//     };
-//     getMyObject();
-//   }, [token]);
-
- const login = () => {
-     signInWithEmailAndPassword(auth,email,password).then((userCredential) => {
-        const user = userCredential.user;
-     })
- }
+  // Función para el inicio de sesión
+  const handleLogin = async () => {
+    try {
+      console.log(username, password);
+      const response = await AuthenticationService.login(username, password);
+      // Guardar el token en AsyncStorage
+      console.log(response.result.data);
+      await AsyncStorage.setItem('token', response.result.data);
+      navigation.replace("Main");
+      Alert.alert('Inicio de sesión exitoso');
+    } catch (error) {
+      Alert.alert('Error', error);
+    }
+  };
+  
 
   useEffect(() => {
-    try {
-      const unsubscribe = auth.onAuthStateChanged((authUser) => {
-        if (authUser) {
-          navigation.replace("Main");
-        }
-      });
-
-      return unsubscribe;
-    } catch (e) {
-      console.log(e);
-    }
+    // Aquí puedes verificar si el usuario ya está autenticado
   }, []);
 
   return (
@@ -78,22 +58,21 @@ const LoginScreen = () => {
           <Text style={{ color: "#003580", fontSize: 17, fontWeight: "700" }}>
             Iniciar Sesión
           </Text>
-
         </View>
 
         <View style={{ marginTop: 50 }}>
           <View>
             <Text style={{ fontSize: 18, fontWeight: "600", color: "black" }}>
-              Email
+              Username
             </Text>
 
             <TextInput
-              value={email}
-              onChangeText={(text) => setEmail(text)}
+              value={username}
+              onChangeText={(text) => setUsername(text)}
               placeholder="Correo Electrónico"
               placeholderTextColor={"gray"}
               style={{
-                fontSize: email ? 18 : 18,
+                fontSize: username ? 18 : 18,
                 borderBottomColor: "gray",
                 borderBottomWidth: 1,
                 marginVertical: 10,
@@ -111,7 +90,7 @@ const LoginScreen = () => {
               value={password}
               onChangeText={(text) => setPassword(text)}
               secureTextEntry={true}
-              placeholder="Colocar minimo 6 caracteres"
+              placeholder="Colocar mínimo 6 caracteres"
               placeholderTextColor={"gray"}
               style={{
                 fontSize: password ? 18 : 18,
@@ -125,7 +104,7 @@ const LoginScreen = () => {
         </View>
 
         <Pressable
-        onPress={login}
+          onPress={handleLogin}
           style={{
             width: 200,
             backgroundColor: "#003580",

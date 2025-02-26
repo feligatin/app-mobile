@@ -1,10 +1,9 @@
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import React, { useLayoutEffect, useState, useEffect } from "react";
+import React, { useLayoutEffect, useState, useEffect, useMemo } from "react";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { Octicons } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
-import NewPropertyCard from "../components/NewPropertyCard";
 import PropertyCard from "../components/PropertyCard";
 import { BottomModal } from "react-native-modals";
 import { ModalFooter } from "react-native-modals";
@@ -13,14 +12,20 @@ import { ModalTitle } from "react-native-modals";
 import { FontAwesome } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import { ModalContent } from "react-native-modals";
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "../firebase";
+import HotelService from "../services/hotelService"; // Importa tu servicio
 
 const PlacesScreen = () => {
   const route = useRoute();
   const navigation = useNavigation();
   const [modalVisibile, setModalVisibile] = useState(false);
-  const [selectedFilter, setSelectedFilter] = useState([]);
+  const [selectedFilter, setSelectedFilter] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const [sortedData, setSortedData] = useState([]);
+  console.log("hotels entrando", hotels);
+  const hotelId = route.params?.id; // Obtener el id del hotel desde los parámetros de la ruta
+  const hotels = route.params?.place;
+  console.log("acaentra", hotels);
   useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: true,
@@ -37,78 +42,32 @@ const PlacesScreen = () => {
         shadowColor: "transparent",
       },
     });
-  }, []);
-  const filters = [
-    {
-      id: "0",
-      filter: "Costo: Bajo a Alto",
-    },
-    {
-      id: "1",
-      filter: "Costo: Alto a Bajo",
-    },
-  ];
-  const [loading, setLoading] = useState(false);
-  const [items, setItems] = useState([]);
+  }, [navigation]);
+
   useEffect(() => {
-    if (items.length > 0) return;
+    // Simulación de la carga de datos desde tu API
+  }, );
 
-    setLoading(true);
+  // Filtrar los hoteles para obtener solo el que coincide con el `hotelId` recibido
+  const filteredPlaces = useMemo(() => {
+    return hotels.filter((hotel) => hotel.hotel_id === hotelId);
+  }, [hotels, hotelId]);
 
-    const fetchProducts = async () => {
-      const colRef = collection(db, "places");
-      const docsSnap = await getDocs(colRef);
-      const newItems = [];
-      docsSnap.forEach((doc) => {
-        newItems.push(doc.data());
-      });
-      setItems(newItems);
-      setLoading(false);
-    };
-
-    fetchProducts();
-  }, [items]);
-
-  const searchPlaces = items?.filter(
-    (item) => item.place === route.params.place
-  );
-  const [sortedData, setSortedData] = useState(searchPlaces);
-
-  const compare = (a, b) => {
-    if (a.newPrice > b.newPrice) {
-      return -1;
+  // Aplicar filtros de precio
+  useEffect(() => {
+    let sorted = [...filteredPlaces];
+    if (selectedFilter === "Costo: Alto a Bajo") {
+      sorted.sort((a, b) => b.price - a.price);
+    } else if (selectedFilter === "Costo: Bajo a Alto") {
+      sorted.sort((a, b) => a.price - b.price);
     }
-    if (a.newPrice < b.newPrice) {
-      return 1;
-    }
-    return 0;
-  };
-
-  const comparision = (a, b) => {
-    if (a.newPrice < b.newPrice) {
-      return -1;
-    }
-    if (a.newPrice > b.newPrice) {
-      return 1;
-    }
-    return 0;
-  };
+    setSortedData(sorted);
+  }, [selectedFilter, filteredPlaces]);
 
   const applyFilter = (filter) => {
+    setSelectedFilter(filter);
     setModalVisibile(false);
-    switch (filter) {
-      case "cost:High to Low":
-        searchPlaces.map((val) => val.properties.sort(compare));
-        setSortedData(searchPlaces);
-        break;
-      case "cost:Low to High":
-        searchPlaces.map((val) => val.properties.sort(comparision));
-        setSortedData(searchPlaces);
-        break;
-    }
   };
-
-  //console.log(route.params);
 
   return (
     <View>
@@ -142,7 +101,7 @@ const PlacesScreen = () => {
         <Pressable
           onPress={() =>
             navigation.navigate("Map", {
-              searchResults: searchPlaces,
+              searchResults: filteredPlaces,
             })
           }
           style={{ flexDirection: "row", alignItems: "center" }}
@@ -158,32 +117,26 @@ const PlacesScreen = () => {
         <Text>Fetching places....</Text>
       ) : (
         <ScrollView style={{ backgroundColor: "#F5F5F5" }}>
-          {searchPlaces?.map((item) => {
-            console.log("Place:", item); // Log each place
-            if (item.properties && Array.isArray(item.properties)) {
-            return item.properties.map((property, index) => (
-              <PropertyCard
-                key={index}
-                rooms={route.params.rooms}
-                children={route.params.children}
-                adults={route.params.adults}
-                selectedDates={route.params.selectedDates}
-                property={property}
-                availableRooms={property.rooms}
-              />
-            ));
-          } else {
-            console.log('item.properties no está definido o no es un array', item.properties);
-          }})}
+          {hotels.map((hotel, index) => (
+            <PropertyCard
+              key={hotel.hotel_id || index}
+              rooms={hotel.rooms}
+              children={route.params.children}
+              adults={route.params.adults}
+              selectedDates={route.params.selectedDates}
+              property={{
+                name: hotel.name || "Sin nombre",
+                city: hotel.city || "Sin ciudad",
+                price: hotel.price,
+                image: 'https://zigohotelesstorage.blob.core.windows.net/images/' + hotel.image,
+                services: hotel.services,
+                rating: hotel.number_stars,
+                hotel_id: hotel.hotel_id,
+                availableRooms: hotel.rooms,
+              }}
+            />
+          ))}
         </ScrollView>
-
-        // <ScrollView style={{ backgroundColor: "#F5F5F5" }}>
-        //   {searchPlaces?.map((item, index) => {
-        //     console.log("Place:", item); // Log each place
-
-        //     return <NewPropertyCard key={index} property={item} />;
-        //   })}
-        // </ScrollView>
       )}
 
       <BottomModal
@@ -231,29 +184,31 @@ const PlacesScreen = () => {
             </View>
 
             <View style={{ flex: 3, margin: 10 }}>
-              {filters.map((item, index) => (
-                <Pressable
-                  onPress={() => setSelectedFilter(item.filter)}
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginVertical: 10,
-                  }}
-                  key={index}
-                >
-                  {selectedFilter.includes(item.filter) ? (
-                    <FontAwesome name="circle" size={18} color="green" />
-                  ) : (
-                    <Entypo name="circle" size={18} color="black" />
-                  )}
-
-                  <Text
-                    style={{ fontSize: 16, fontWeight: "500", marginLeft: 6 }}
+              {["Costo: Bajo a Alto", "Costo: Alto a Bajo"].map(
+                (filter, index) => (
+                  <Pressable
+                    onPress={() => setSelectedFilter(filter)}
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      marginVertical: 10,
+                    }}
+                    key={index}
                   >
-                    {item.filter}
-                  </Text>
-                </Pressable>
-              ))}
+                    {selectedFilter === filter ? (
+                      <FontAwesome name="circle" size={18} color="green" />
+                    ) : (
+                      <Entypo name="circle" size={18} color="black" />
+                    )}
+
+                    <Text
+                      style={{ fontSize: 16, fontWeight: "500", marginLeft: 6 }}
+                    >
+                      {filter}
+                    </Text>
+                  </Pressable>
+                )
+              )}
             </View>
           </View>
         </ModalContent>

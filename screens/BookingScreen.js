@@ -3,8 +3,6 @@ import React, { useLayoutEffect, useState, useEffect } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
-import { collection, getDocs, query, where } from "firebase/firestore";
-import { auth, db } from "../firebase";
 
 const BookingScreen = () => {
   const navigation = useNavigation();
