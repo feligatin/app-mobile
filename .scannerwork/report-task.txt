@@ -3,5 +3,5 @@ projectKey=feligatin
 serverUrl=https://sonarcloud.io
 serverVersion=8.0.0.60037
 dashboardUrl=https://sonarcloud.io/dashboard?id=feligatin
-ceTaskId=AZVD1KeCRPmicz5LPJXw
-ceTaskUrl=https://sonarcloud.io/api/ce/task?id=AZVD1KeCRPmicz5LPJXw
+ceTaskId=AZVD9K3XKGwkRmqDvVid
+ceTaskUrl=https://sonarcloud.io/api/ce/task?id=AZVD9K3XKGwkRmqDvVid

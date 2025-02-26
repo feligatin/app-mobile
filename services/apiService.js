@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class ApiService {
   constructor() {
-    this.apiBackEnd = 'https://zigohoteles-api.azurewebsites.net/'; // Cambia esto por la URL de tu backend
+    this.apiBackEnd = 'http://192.168.1.44:3000/'; 
     this.http = axios.create({
       baseURL: this.apiBackEnd,
       headers: {
