@@ -7,6 +7,27 @@ import ProfileScreen from "../screens/ProfileScreen";
 
 const Tab = createBottomTabNavigator();
 
+const renderHomeIcon = ({ focused }) =>
+  focused ? (
+    <Entypo name="home" size={24} color="#003580" />
+  ) : (
+    <AntDesign name="home" size={24} color="black" />
+  );
+
+const renderBookingsIcon = ({ focused }) =>
+  focused ? (
+    <Ionicons name="notifications" size={24} color="#003580" />
+  ) : (
+    <Ionicons name="notifications-outline" size={24} color="black" />
+  );
+
+const renderProfileIcon = ({ focused }) =>
+  focused ? (
+    <Ionicons name="person" size={24} color="#003580" />
+  ) : (
+    <Ionicons name="person-outline" size={24} color="black" />
+  );
+
 const BottomTabs = () => {
   return (
     <Tab.Navigator>
@@ -16,12 +37,7 @@ const BottomTabs = () => {
         options={{
           tabBarLabel: "Inicio",
           headerShown: false,
-          tabBarIcon: ({ focused }) =>
-            focused ? (
-              <Entypo name="home" size={24} color="#003580" />
-            ) : (
-              <AntDesign name="home" size={24} color="black" />
-            ),
+          tabBarIcon: renderHomeIcon, 
         }}
       />
 
@@ -31,12 +47,7 @@ const BottomTabs = () => {
         options={{
           tabBarLabel: "Reservas",
           headerShown: false,
-          tabBarIcon: ({ focused }) =>
-            focused ? (
-              <Ionicons name="notifications" size={24} color="#003580" />
-            ) : (
-              <Ionicons name="notifications-outline" size={24} color="black" />
-            ),
+          tabBarIcon: renderBookingsIcon, 
         }}
       />
 
@@ -46,12 +57,7 @@ const BottomTabs = () => {
         options={{
           tabBarLabel: "Perfil",
           headerShown: false,
-          tabBarIcon: ({ focused }) =>
-            focused ? (
-              <Ionicons name="person" size={24} color="#003580" />
-            ) : (
-              <Ionicons name="person-outline" size={24} color="black" />
-            ),
+          tabBarIcon: renderProfileIcon,
         }}
       />
     </Tab.Navigator>
