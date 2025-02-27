@@ -8,57 +8,38 @@ import {
   ActivityIndicator,
 } from "react-native";
 import React, { useState } from "react";
-import { AntDesign } from "@expo/vector-icons";
-import { MaterialIcons } from "@expo/vector-icons";
+import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import hotelService from "../services/hotelService";  // Asegúrate de importar tu servicio de hoteles
+import hotelService from "../services/hotelService";  
+import PropTypes from "prop-types";
 
-const PropertyCard = ({
-  rooms,
-  children,
-  adults,
-  selectedDates,
-  property,
-}) => {
+const PropertyCard = ({ rooms, children, adults, selectedDates, property }) => {
   const { width, height } = Dimensions.get("window");
   const navigation = useNavigation();
-  const [loading, setLoading] = useState(false); // Estado para indicar si está cargando
+  const [loading, setLoading] = useState(false);
   
-  // Función para obtener los detalles del hotel por id
   const handlePress = async () => {
-    setLoading(true); // Mostrar el indicador de carga
+    setLoading(true); 
     try {
-      const response = await hotelService.getHotelById(property.hotel_id); // Llamada al backend
-      const hotelDetails = response.result.data; // Asegúrate de que la estructura sea la correcta
-      console.log("Hotel details:", hotelDetails);
-      console.log("Hotel images:", hotelDetails.hotel[0].images);
+      const response = await hotelService.getHotelById(property.hotel_id); 
+      const hotelDetails = response.result.data; 
+
       const hotel = hotelDetails?.hotel?.[0];
-      let  imageUrls = [];
+      let imageUrls = [];
       if (hotel && hotel.images) {
         const imagesString = hotel.images;
-      
-        // Dividir las imágenes en un array si están separadas por comas
-        const imageNames = imagesString.split(',');
-      
-        // Suponiendo que la URL base es:
-        const baseUrl = 'https://zigohotelesstorage.blob.core.windows.net/images/';
-      
-        // Crear URLs completas para cada imagen
-           imageUrls = imageNames.map(imageName => `${baseUrl}${imageName.trim()}`);
-      
-        console.log("Imágenes del hotel:", imageUrls);
-      
-        // Aquí puedes usar imageUrls en tu componente para mostrar las imágenes
+        const imageNames = imagesString.split(",");
+        const baseUrl = "https://zigohotelesstorage.blob.core.windows.net/images/";
+        imageUrls = imageNames.map(imageName => `${baseUrl}${imageName.trim()}`);
       } else {
         console.error("No se encontraron imágenes para el hotel.");
       }
-      // Navega a la pantalla "Info" pasando los detalles del hotel
-      console.log("Hotel property:", property);
+
       navigation.navigate("Info", {
         name: hotel.tradename,
         rating: hotel.number_stars,
         price: property.price,
-        photos: imageUrls, // Aquí se pasan las fotos obtenidas del backend
+        photos: imageUrls, 
         availableRooms: property.availableRooms,
         adults: adults,
         children: children,
@@ -69,7 +50,7 @@ const PropertyCard = ({
     } catch (error) {
       console.error("Error fetching hotel details:", error);
     } finally {
-      setLoading(false); // Dejar de mostrar el indicador de carga
+      setLoading(false); 
     }
   };
 
@@ -77,7 +58,7 @@ const PropertyCard = ({
     <View>
       <Pressable
         key={property.id}
-        onPress={handlePress} // Aquí hacemos la llamada al backend al presionar la tarjeta
+        onPress={handlePress} 
         style={{ margin: 15, flexDirection: "row", backgroundColor: "white" }}
       >
         <View>
@@ -179,6 +160,23 @@ const PropertyCard = ({
       )}
     </View>
   );
+};
+
+// ✅ Agregamos validación de PropTypes
+PropertyCard.propTypes = {
+  rooms: PropTypes.number.isRequired, // rooms debe ser un número y obligatorio
+  children: PropTypes.number.isRequired,
+  adults: PropTypes.number.isRequired,
+  selectedDates: PropTypes.array.isRequired,
+  property: PropTypes.shape({
+    hotel_id: PropTypes.string.isRequired,
+    image: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    rating: PropTypes.number.isRequired,
+    address: PropTypes.string,
+    price: PropTypes.number.isRequired,
+    availableRooms: PropTypes.number.isRequired,
+  }).isRequired,
 };
 
 export default PropertyCard;
