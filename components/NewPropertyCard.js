@@ -1,6 +1,6 @@
-// NewPropertyCard.js
 import React from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
+import PropTypes from "prop-types"; 
 
 const NewPropertyCard = ({ property }) => {
   return (
@@ -20,6 +20,16 @@ const NewPropertyCard = ({ property }) => {
       </View>
     </View>
   );
+};
+
+NewPropertyCard.propTypes = {
+  property: PropTypes.shape({
+    image: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    address: PropTypes.string,
+    newPrice: PropTypes.number.isRequired,
+    rooms: PropTypes.number.isRequired,
+  }).isRequired,
 };
 
 const styles = StyleSheet.create({
