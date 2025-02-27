@@ -26,7 +26,7 @@ const PropertyCard = ({ rooms, children, adults, selectedDates, property }) => {
 
       const hotel = hotelDetails?.hotel?.[0];
       let imageUrls = [];
-      if (hotel && hotel.images) {
+      if (hotel?.images) {
         const imagesString = hotel.images;
         const imageNames = imagesString.split(",");
         const baseUrl = "https://zigohotelesstorage.blob.core.windows.net/images/";
@@ -162,13 +162,14 @@ const PropertyCard = ({ rooms, children, adults, selectedDates, property }) => {
   );
 };
 
-// ✅ Agregamos validación de PropTypes
+
 PropertyCard.propTypes = {
-  rooms: PropTypes.number.isRequired, // rooms debe ser un número y obligatorio
+  rooms: PropTypes.number.isRequired,
   children: PropTypes.number.isRequired,
   adults: PropTypes.number.isRequired,
   selectedDates: PropTypes.array.isRequired,
   property: PropTypes.shape({
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     hotel_id: PropTypes.string.isRequired,
     image: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
